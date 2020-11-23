@@ -1,26 +1,18 @@
-import cv2
 import numpy as np
+import cv2
 
-kamera = cv2.VideoCapture(0)
+resim_1 = cv2.imread("hmy.jpg")
+resim_gri = cv2.cvtColor(resim_1,cv2.COLOR_BGR2GRAY)
 
-while True:
-    ret,kare= kamera.read()
-    gri_kare = cv2.cvtColor(kare,cv2.COLOR_BGR2GRAY)
-    nesne = cv2.imread("bardak.png",0)
-    w,h = nesne.shape
+koseler = cv2.goodFeaturesToTrack(resim_gri,50,0.01,10)
 
-    tarama = cv2.matchTemplate(gri_kare,nesne,cv2.TM_CCOEFF_NORMED)
 
-    esik = 0.8
+for kose in koseler:
+    x,y = kose.ravel()
+    cv2.circle(resim_1,(x,y),3,(255,0,0),-1)
+    print(koseler)
 
-    loc = np.where(tarama > esik)
-    for n in zip(*loc[::-1]):
-        cv2.rectangle(kare,n,(n[0]+h,n[1]+w),(0,255,255),2)
 
-    cv2.imshow("gorntumyum",kare)
-
-    if cv2.waitKey(25) & 0xFF == ord("q"):
-        break
-
-kamera.release()
+cv2.imshow("resmim",resim_1)
+cv2.waitKey(0)
 cv2.destroyAllWindows()
